@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import ArrowLeftOutlinedIcon from '@mui/icons-material/ArrowLeftOutlined';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
-import Modal1 from '../Images/modal1.jpg'
+import Data from '../data'
 
 const Container = styled.div`
     height: 100vh;
     width: 100%;
     display: flex;
-    /* background-color: coral; */
+    /* background-color: #bee4e2a; */
     position: relative;
+    overflow: hidden;
+    z-index: 2;
 `
 
 const Arrow = styled.div`
@@ -28,10 +30,13 @@ const Arrow = styled.div`
     margin: auto;
     cursor: pointer;
     opacity: 0.5;
+    z-index: 2;
 `
 
 const Wrapper = styled.div`
    height: 100%;
+   display: flex;
+   transform: translateX(${props => props.slide * -100}vw);
 `
 
 const Slide = styled.div`
@@ -39,12 +44,12 @@ const Slide = styled.div`
    align-items: center;
    width: 100vw;
    height: 100vh;
+   background-color: #${props => props.bg};
 `
 
 const ImgContainer = styled.div`
     flex: 1;
     height: 100%;
-    /* background-color: #ff7300; */
 `
 const Image = styled.img`
     height:90%;
@@ -60,6 +65,7 @@ const InfoContainer = styled.div`
 
 const Title = styled.h1`
     font-size: 70px;
+    color:'red'
 `
 const Desc = styled.p`
     margin: 50px 0px;
@@ -70,27 +76,44 @@ const Desc = styled.p`
 const Button = styled.button`
     padding: 10px;
     cursor: pointer;
+    font-size: 18px;
+    background-color: transparent;
 `
 
 const Slider = () => {
+
+    const [slider,setSlider] = useState(0)
+
+    const handleClick = (position) => {
+        if(position === 'left'){
+            setSlider(slider > 0 ? slider - 1:2)
+        }else{
+            setSlider(slider < 2 ? slider + 1:0)
+        }
+    }
+
+
   return (
     <Container>
-        <Arrow position='left'>
+        <Arrow position='left' onClick={() => handleClick('left')}>
             <ArrowLeftOutlinedIcon />
         </Arrow>
-        <Wrapper>
-            <Slide>
-              <ImgContainer>
-                <Image src={Modal1} />
-              </ImgContainer>
-              <InfoContainer>
-                 <Title>SPRING SALE</Title>
-                 <Desc>DON'T COMPARE TO STYLE! GET FLAT 50% FOR ALL COLLECTION.</Desc>
-                 <Button>SHOP NOW</Button>
-              </InfoContainer>
-            </Slide>
+        <Wrapper slide={slider}>
+            {Data.map(slide => (
+                
+                <Slide key={slide.id} bg={slide.bg}>
+                <ImgContainer>
+                  <Image src={slide.img} />
+                </ImgContainer>
+                <InfoContainer>
+                   <Title>{slide.title}</Title>
+                   <Desc>{slide.desc}</Desc>
+                   <Button>SHOP NOW</Button>
+                </InfoContainer>
+              </Slide> 
+            )) }
         </Wrapper>
-        <Arrow position='right'>
+        <Arrow position='right' onClick={() => handleClick('right')}>
             <ArrowRightOutlinedIcon />
         </Arrow>
     </Container>
