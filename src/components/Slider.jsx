@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import ArrowLeftOutlinedIcon from '@mui/icons-material/ArrowLeftOutlined';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
-import Data from '../data'
+import {Data} from '../data'
 
 const Container = styled.div`
     height: 100vh;
@@ -36,6 +36,7 @@ const Arrow = styled.div`
 const Wrapper = styled.div`
    height: 100%;
    display: flex;
+   transition: all 1.5s ease;
    transform: translateX(${props => props.slide * -100}vw);
 `
 
@@ -86,12 +87,13 @@ const Slider = () => {
 
     const handleClick = (position) => {
         if(position === 'left'){
-            setSlider(slider > 0 ? slider - 1:2)
+            setSlider(slider > 0 ? slider - 1:Data.length-1)
         }else{
-            setSlider(slider < 2 ? slider + 1:0)
+            setSlider(slider < Data.length-1 ? slider + 1:0)
         }
     }
 
+    /* console.log({slider}) */
 
   return (
     <Container>
@@ -100,18 +102,17 @@ const Slider = () => {
         </Arrow>
         <Wrapper slide={slider}>
             {Data.map(slide => (
-                
                 <Slide key={slide.id} bg={slide.bg}>
-                <ImgContainer>
-                  <Image src={slide.img} />
-                </ImgContainer>
-                <InfoContainer>
-                   <Title>{slide.title}</Title>
-                   <Desc>{slide.desc}</Desc>
-                   <Button>SHOP NOW</Button>
-                </InfoContainer>
+                    <ImgContainer>
+                         <Image src={slide.img} />
+                    </ImgContainer>
+                    <InfoContainer>
+                         <Title>{slide.title}</Title>
+                         <Desc>{slide.desc}</Desc>
+                         <Button>SHOP NOW</Button>
+                    </InfoContainer>
               </Slide> 
-            )) }
+            ))}
         </Wrapper>
         <Arrow position='right' onClick={() => handleClick('right')}>
             <ArrowRightOutlinedIcon />
