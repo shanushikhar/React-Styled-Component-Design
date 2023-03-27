@@ -2,6 +2,21 @@ import { FavoriteBorderOutlined, SearchOutlined, ShoppingCartOutlined } from '@m
 import React from 'react'
 import styled from 'styled-components'
 
+const Info = styled.div`
+     /* background-color: rgba(0,0,0,0.1);  */
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    opacity: 0; 
+    transition: all 1.0s ease;
+`
+
 const Container = styled.div`
     flex: 1;
     height: 50vh;
@@ -12,6 +27,9 @@ const Container = styled.div`
     background-color: #f5fbfd;
     margin: 3px;
     position: relative;
+    &:hover ${Info}{
+        opacity: 1;
+    }
 `
 const Circle = styled.div`
     height: 200px;
@@ -24,19 +42,7 @@ const Image = styled.img`
     height: 70%;
     z-index: 2;
 `
-const Info = styled.div`
-    /* background-color: bisque; */
-    position: absolute;
-    z-index: 3;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    
-`
+
 const Icon = styled.div`
     height: 50px;
     width: 50px;
@@ -48,7 +54,7 @@ const Icon = styled.div`
     align-items: center;
     margin: 5px;
     cursor: pointer;
-
+    transition: all 0.5s ease;
     &:hover{
         background-color: #db4c4c;
         transform: scale(1.1);
