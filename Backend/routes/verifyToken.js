@@ -12,14 +12,25 @@ const validateUser = (req, res, next) => {
       next();
     });
   } else {
-    res.status(401).status("You are not authenticated..");
+    res.status(401).json("You are not authenticated..");
   }
 };
 
 const authenticateToken = (req, res, next) => {
   validateUser(req, res, () => {
     if (req.user.id === req.params.id || req.user.isAdmin) {
-      // reqq.params.id => we are passing the id in the parammeter like
+      // reqq.params.id => we are passing the id in the parammeter like localhost:8000/update/64287fa71f3b14f9625bd486
+      next();
+    } else {
+      res.status(403).json("Not allowed to do anything.."); // if id is not correct
+    }
+  });
+};
+
+const authenticateAdminWithToken = (req, res, next) => {
+  validateUser(req, res, () => {
+    console.log("---", req.user);
+    if (req.user.isAdmin) {
       next();
     } else {
       res.status(403).json("Not allowed to do anything..");
@@ -27,4 +38,4 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-module.exports = { authenticateToken };
+module.exports = { authenticateToken, authenticateAdminWithToken };

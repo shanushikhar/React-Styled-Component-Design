@@ -10,6 +10,7 @@ router.post("/test", (req, res) => {
 
 // Register
 router.post("/register", async (req, res) => {
+  // localhost:8000/api/register
   const newUser = new User({
     username: req.body.username,
     email: req.body.email,
@@ -30,6 +31,7 @@ router.post("/register", async (req, res) => {
 
 // Login
 router.post("/login", async (req, res) => {
+  // localhost:8000/api/login
   try {
     const user = await User.findOne({ username: req.body.username });
     !user && res.status(404).json("User not found..");
