@@ -57,9 +57,43 @@ router.get("/find/:id", authenticateAdminWithToken, async (req, res) => {
 // Get all user
 router.get("/findall", authenticateAdminWithToken, async (req, res) => {
   // localhost:8000/user/findall
+  const query = req.query.new; // localhost:8000/user/findall?new=true
   try {
-    const users = await User.find();
+    const users = query
+      ? await User.find().sort({ _id: -1 }).limit(5)
+      : await User.find();
     res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+// Get User Stats
+router.get("/stats", authenticateAdminWithToken, async (req, res) => {
+  // localhost:8000/user/stats
+  const date = new Date();
+  const lastyear = new Date(date.setFullYear(date.getFullYear() - 1));
+
+  try {
+    const data = await User.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: lastyear },
+        },
+      },
+      {
+        $project: {
+          month: { $month: "$createdAt" },
+        },
+      },
+      {
+        $group: {
+          _id: "$month",
+          total: { $sum: 1 },
+        },
+      },
+    ]);
+    res.status(200).json(data);
   } catch (error) {
     res.status(500).json(error);
   }
