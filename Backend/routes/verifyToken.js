@@ -29,7 +29,6 @@ const authenticateToken = (req, res, next) => {
 
 const authenticateAdminWithToken = (req, res, next) => {
   validateUser(req, res, () => {
-    console.log("---", req.user);
     if (req.user.isAdmin) {
       next();
     } else {
