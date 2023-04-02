@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const env = require("dotenv");
 const auth = require("./routes/auth");
 const user = require("./routes/user");
+const product = require("./routes/product");
 
 env.config();
 
@@ -16,6 +17,7 @@ mongoose
 app.use(express.json());
 app.use("/api", auth);
 app.use("/user", user);
+app.use("/product", product);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
