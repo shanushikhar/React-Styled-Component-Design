@@ -37,4 +37,8 @@ const authenticateAdminWithToken = (req, res, next) => {
   });
 };
 
-module.exports = { authenticateToken, authenticateAdminWithToken };
+module.exports = {
+  validateUser,
+  authenticateToken,
+  authenticateAdminWithToken,
+};
