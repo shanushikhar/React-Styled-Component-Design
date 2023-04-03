@@ -5,6 +5,8 @@ const env = require("dotenv");
 const auth = require("./routes/auth");
 const user = require("./routes/user");
 const product = require("./routes/product");
+const cart = require("./routes/cart");
+const order = require("./routes/order");
 
 env.config();
 
@@ -18,6 +20,8 @@ app.use(express.json());
 app.use("/api", auth);
 app.use("/user", user);
 app.use("/product", product);
+app.use("/cart", cart);
+app.use("/order", order);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
