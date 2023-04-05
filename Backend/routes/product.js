@@ -1,81 +1,74 @@
-const { authenticateAdminWithToken } = require("./verifyToken");
-const Product = require("../modals/Product");
+const Product = require("../models/Product");
+const {
+  verifyToken,
+  verifyTokenAndAuthorization,
+  verifyTokenAndAdmin,
+} = require("./verifyToken");
+
 const router = require("express").Router();
 
-// Add Products
-router.post("/addProduct", authenticateAdminWithToken, async (req, res) => {
-  // localhost:8000/product/addProduct
-  const newProducts = new Product(req.body);
+//CREATE
+
+router.post("/", verifyTokenAndAdmin, async (req, res) => {
+  const newProduct = new Product(req.body);
+
   try {
-    const addproduct = await newProducts.save();
-    res.status(201).json(addproduct);
-  } catch (error) {
-    res.status(500).json(error);
+    const savedProduct = await newProduct.save();
+    res.status(200).json(savedProduct);
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
 
-// Update Product
-// localhost:8000/product/updateProduct/642984f70e62c7560cd8ace1
-router.put(
-  "/updateProduct/:id",
-  authenticateAdminWithToken,
-  async (req, res) => {
-    try {
-      const updateproduct = await Product.findByIdAndUpdate(
-        req.params.id,
-        { $set: req.body },
-        { new: true }
-      );
-      res.status(201).json(updateproduct);
-    } catch (error) {
-      res.status(500).json(error.message);
-    }
-  }
-);
-
-// Delete product
-// localhost:8000/product/deleteProduct/642989ec87b9ea78d3323c5b
-router.delete(
-  "/deleteProduct/:id",
-  authenticateAdminWithToken,
-  async (req, res) => {
-    try {
-      const deletedproduct = await Product.findByIdAndDelete(req.params.id);
-      if (deletedproduct) res.status(201).json("Product deleted..");
-
-      res.status(404).json("Product not found..");
-    } catch (error) {
-      res.status(500).json(error.message);
-    }
-  }
-);
-
-// Get Single Product
-router.get("/getproduct/:id", async (req, res) => {
-  // localhost:8000/product/getproduct/64298ac63c7420b9bbde6be4
+//UPDATE
+router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
   try {
-    const productdetails = await Product.findById(req.params.id);
-    res.status(200).json(productdetails);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json(error);
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedProduct);
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
 
-// Get all products
-router.get("/allProducts", async (req, res) => {
-  // localhost:8000/product/allProducts
-  const qnew = req.query.new; // localhost:8000/product/allProducts?new=true
-  const qcategory = req.query.category; // localhost:8000/product/allProducts?category=Men
-
-  let products;
+//DELETE
+router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
   try {
-    if (qnew) {
-      products = await Product.find().sort({ createdAt: -1 }).limit(5);
-    } else if (qcategory) {
+    await Product.findByIdAndDelete(req.params.id);
+    res.status(200).json("Product has been deleted...");
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//GET PRODUCT
+router.get("/find/:id", async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    res.status(200).json(product);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//GET ALL PRODUCTS
+router.get("/", async (req, res) => {
+  const qNew = req.query.new;
+  const qCategory = req.query.category;
+  try {
+    let products;
+
+    if (qNew) {
+      products = await Product.find().sort({ createdAt: -1 }).limit(1);
+    } else if (qCategory) {
       products = await Product.find({
         categories: {
-          $in: [qcategory],
+          $in: [qCategory],
         },
       });
     } else {
@@ -83,8 +76,8 @@ router.get("/allProducts", async (req, res) => {
     }
 
     res.status(200).json(products);
-  } catch (error) {
-    res.status(500).json(error);
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
 

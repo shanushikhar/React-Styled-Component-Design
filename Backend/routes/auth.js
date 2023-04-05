@@ -1,64 +1,57 @@
 const router = require("express").Router();
-const User = require("../modals/User");
-const Encrypt = require("crypto-js");
+const User = require("../models/User");
+const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");
 
-router.post("/test", (req, res) => {
-  const username = req.body.username;
-  res.send("username is " + username);
-});
-
-// Register
+//REGISTER
 router.post("/register", async (req, res) => {
-  // localhost:8000/api/register
   const newUser = new User({
     username: req.body.username,
     email: req.body.email,
-    password: Encrypt.AES.encrypt(
+    password: CryptoJS.AES.encrypt(
       req.body.password,
       process.env.PASS_SEC
     ).toString(),
   });
-  console.log(newUser);
 
   try {
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
   } catch (err) {
-    res.status(500).json(err.message);
+    res.status(500).json(err);
   }
 });
 
-// Login
+//LOGIN
+
 router.post("/login", async (req, res) => {
-  // localhost:8000/api/login
   try {
     const user = await User.findOne({ username: req.body.username });
-    !user && res.status(404).json("User not found..");
+    !user && res.status(401).json("Wrong credentials!");
 
-    const decryptPassword = Encrypt.AES.decrypt(
+    const hashedPassword = CryptoJS.AES.decrypt(
       user.password,
       process.env.PASS_SEC
     );
-    const originalPassword = decryptPassword.toString(Encrypt.enc.Utf8);
+    const OriginalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
 
-    originalPassword !== req.body.password &&
-      res.status(403).json("Unauthorised User!");
+    OriginalPassword !== req.body.password &&
+      res.status(401).json("Wrong credentials!");
 
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
       {
         id: user._id,
         isAdmin: user.isAdmin,
       },
       process.env.JWT_SEC,
-      { expiresIn: "3d" }
+      {expiresIn:"3d"}
     );
 
-    const { _id, password, ...othersDetails } = user._doc; // rest operator
+    const { password, ...others } = user._doc;
 
-    res.status(200).json({ ...othersDetails, token, _id }); // spread operator
-  } catch (error) {
-    res.status(500).json(error.message);
+    res.status(200).json({...others, accessToken});
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
 

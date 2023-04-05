@@ -1,89 +1,87 @@
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
+import { Add, Remove } from "@material-ui/icons";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import Mobile from "../responsive/responsive";
+import { mobile } from "../responsive";
+import StripeCheckout from "react-stripe-checkout";
+import { useEffect, useState } from "react";
+import { userRequest } from "../requestMethods";
+import { useHistory } from "react-router";
+
+// const KEY = process.env.REACT_APP_STRIPE;
+const KEY =
+  "pk_test_51Msp4TSFqevdkDFKBJD4kAguwaDE3hb22tuimDNIuNwvtrdJi9kA4s06A3WCq8ZJn96vpWqd4bu9T50WB4567vvE006fcF8TH1";
 
 const Container = styled.div``;
 
 const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
+  padding: 20px;
+  ${mobile({ padding: "10px" })}
 `;
 
 const Title = styled.h1`
-  text-align: center;
   font-weight: 300;
-  margin-top: 10px;
-  padding: 5px;
+  text-align: center;
 `;
 
-const TopSection = styled.div`
+const Top = styled.div`
   display: flex;
+  align-items: center;
   justify-content: space-between;
   padding: 20px;
-  margin: 0 10px;
-  ${Mobile({ flexDirection: "column" })}
 `;
 
 const TopButton = styled.button`
   padding: 10px;
-  border: 2px solid black;
-  font-weight: bold;
-  background-color: ${(props) => props.type && "black"};
-  color: ${(props) => props.type && "white"};
-  font-weight: ${(props) => props.type && "600"};
+  font-weight: 600;
   cursor: pointer;
+  border: ${(props) => props.type === "filled" && "none"};
+  background-color: ${(props) =>
+    props.type === "filled" ? "black" : "transparent"};
+  color: ${(props) => props.type === "filled" && "white"};
 `;
 
 const TopTexts = styled.div`
-  ${Mobile({ margin: "10px 0", textAlign: "center" })}
+  ${mobile({ display: "none" })}
 `;
 const TopText = styled.span`
-  margin-right: 10px;
   text-decoration: underline;
-  font-weight: 500;
-  text-decoration-thickness: 2px;
   cursor: pointer;
+  margin: 0px 10px;
 `;
 
-const BottomSection = styled.div`
+const Bottom = styled.div`
   display: flex;
-  padding: 20px;
   justify-content: space-between;
-  ${Mobile({ flexDirection: "column" })}
+  ${mobile({ flexDirection: "column" })}
 `;
 
 const Info = styled.div`
-  flex: 6;
-  /* margin-right: 40px; */
+  flex: 3;
 `;
 
 const Product = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  width: 90%;
-  ${Mobile({ flexDirection: "column" })}
+  ${mobile({ flexDirection: "column" })}
 `;
 
 const ProductDetail = styled.div`
+  flex: 2;
   display: flex;
-  height: 200px;
 `;
 
 const Image = styled.img`
-  width: 250px;
-  object-fit: contain;
+  width: 200px;
 `;
 
 const Details = styled.div`
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  ${Mobile({ fontSize: "15px" })}
 `;
 
 const ProductName = styled.span``;
@@ -91,8 +89,8 @@ const ProductName = styled.span``;
 const ProductId = styled.span``;
 
 const ProductColor = styled.div`
-  width: 25px;
-  height: 25px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background-color: ${(props) => props.color};
 `;
@@ -100,28 +98,29 @@ const ProductColor = styled.div`
 const ProductSize = styled.span``;
 
 const PriceDetail = styled.div`
-  padding: 20px;
+  flex: 1;
   display: flex;
-
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
 `;
 
 const ProductAmountContainer = styled.div`
   display: flex;
-  margin: 10px;
+  align-items: center;
+  margin-bottom: 20px;
 `;
 
 const ProductAmount = styled.div`
   font-size: 24px;
-  margin: 0px 5px;
+  margin: 5px;
+  ${mobile({ margin: "5px 15px" })}
 `;
 
 const ProductPrice = styled.div`
-  font-size: 24px;
-  font-weight: 400;
-  margin-top: 10px;
+  font-size: 30px;
+  font-weight: 200;
+  ${mobile({ marginBottom: "20px" })}
 `;
 
 const Hr = styled.hr`
@@ -131,25 +130,23 @@ const Hr = styled.hr`
 `;
 
 const Summary = styled.div`
-  flex: 2;
-  border: 1px solid lightgray;
-  height: 40vh;
+  flex: 1;
+  border: 0.5px solid lightgray;
   border-radius: 10px;
-  padding: 30px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  ${Mobile({ marginTop: "20px" })}
+  padding: 20px;
+  height: 50vh;
 `;
 
-const SummaryTitle = styled.h1``;
+const SummaryTitle = styled.h1`
+  font-weight: 200;
+`;
 
 const SummaryItem = styled.div`
+  margin: 30px 0px;
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  ${Mobile({ marginTop: "20px" })}
+  font-weight: ${(props) => props.type === "total" && "500"};
+  font-size: ${(props) => props.type === "total" && "24px"};
 `;
 
 const SummaryItemText = styled.span``;
@@ -161,91 +158,87 @@ const Button = styled.button`
   padding: 10px;
   background-color: black;
   color: white;
-  cursor: pointer;
-  border-radius: 20px;
-  border: none;
-  &:hover {
-    background-color: gray;
-    color: white;
-    font-weight: bold;
-  }
-  ${Mobile({ padding: "15px", marginTop: "20px", backgroundColor: "teal" })}
+  font-weight: 600;
 `;
 
 const Cart = () => {
+  const cart = useSelector((state) => state.cart);
+  const [stripeToken, setStripeToken] = useState(null);
+  const history = useHistory();
+
+  const onToken = (token) => {
+    setStripeToken(token);
+    console.log({ token });
+  };
+
+  useEffect(() => {
+    const makeRequest = async () => {
+      try {
+        const res = await userRequest.post("/checkout/payment", {
+          tokenId: stripeToken.id,
+          amount: 500,
+        });
+        console.log({ res });
+        history.push("/success", {
+          stripeData: res.data,
+          products: cart,
+        });
+      } catch {}
+    };
+    stripeToken && makeRequest();
+  }, [stripeToken, cart.total, history]);
   return (
     <Container>
       <Navbar />
       <Announcement />
       <Wrapper>
         <Title>YOUR BAG</Title>
-        <TopSection>
+        <Top>
           <TopButton>CONTINUE SHOPPING</TopButton>
           <TopTexts>
             <TopText>Shopping Bag(2)</TopText>
             <TopText>Your Wishlist (0)</TopText>
           </TopTexts>
           <TopButton type="filled">CHECKOUT NOW</TopButton>
-        </TopSection>
-        <BottomSection>
+        </Top>
+        <Bottom>
           <Info>
-            <Product>
-              <ProductDetail>
-                <Image src="https://m.media-amazon.com/images/I/51UDX+yrWXS._UX625_.jpg" />
-                <Details>
-                  <ProductName>
-                    <b>Product:</b> NIKE AIR JORDAN
-                  </ProductName>
-                  <ProductId>
-                    <b>ID:</b> 435435256576
-                  </ProductId>
-                  <ProductColor color="black" />
-                  <ProductSize>
-                    <b>Size:</b> M
-                  </ProductSize>
-                </Details>
-              </ProductDetail>
-              <PriceDetail>
-                <ProductAmountContainer>
-                  <AddIcon style={{ cursor: "pointer" }} />
-                  <ProductAmount>2</ProductAmount>
-                  <RemoveIcon style={{ cursor: "pointer" }} />
-                </ProductAmountContainer>
-                <ProductPrice>$ {200 * 2}</ProductPrice>
-              </PriceDetail>
-            </Product>
+            {cart.products.map((product) => (
+              <Product>
+                <ProductDetail>
+                  <Image src={product.img} />
+                  <Details>
+                    <ProductName>
+                      <b>Product:</b> {product.title}
+                    </ProductName>
+                    <ProductId>
+                      <b>ID:</b> {product._id}
+                    </ProductId>
+                    <ProductColor color={product.color} />
+                    <ProductSize>
+                      <b>Size:</b> {product.size}
+                    </ProductSize>
+                  </Details>
+                </ProductDetail>
+                <PriceDetail>
+                  <ProductAmountContainer>
+                    <Add />
+                    <ProductAmount>{product.quantity}</ProductAmount>
+                    <Remove />
+                  </ProductAmountContainer>
+                  <ProductPrice>
+                    $ {product.price * product.quantity}
+                  </ProductPrice>
+                </PriceDetail>
+              </Product>
+            ))}
             <Hr />
-            <Product>
-              <ProductDetail>
-                <Image src="https://static.nike.com/a/images/t_default/ai3jewo0umzzmai3oeuh/air-max-2017-mens-shoes-BVqnkV.png" />
-                <Details>
-                  <ProductName>
-                    <b>Product:</b> NIKE AIR MAX
-                  </ProductName>
-                  <ProductId>
-                    <b>ID:</b> 14546543543543
-                  </ProductId>
-                  <ProductColor color="gray" />
-                  <ProductSize>
-                    <b>Size:</b> L
-                  </ProductSize>
-                </Details>
-              </ProductDetail>
-              <PriceDetail>
-                <ProductAmountContainer>
-                  <AddIcon style={{ cursor: "pointer" }} />
-                  <ProductAmount>1</ProductAmount>
-                  <RemoveIcon style={{ cursor: "pointer" }} />
-                </ProductAmountContainer>
-                <ProductPrice>$ {300 * 1}</ProductPrice>
-              </PriceDetail>
-            </Product>
           </Info>
           <Summary>
             <SummaryTitle>ORDER SUMMARY</SummaryTitle>
             <SummaryItem>
               <SummaryItemText>Subtotal</SummaryItemText>
-              <SummaryItemPrice>$ 80</SummaryItemPrice>
+              <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
             </SummaryItem>
             <SummaryItem>
               <SummaryItemText>Estimated Shipping</SummaryItemText>
@@ -257,11 +250,22 @@ const Cart = () => {
             </SummaryItem>
             <SummaryItem type="total">
               <SummaryItemText>Total</SummaryItemText>
-              <SummaryItemPrice>$ 80</SummaryItemPrice>
+              <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
             </SummaryItem>
-            <Button>CHECKOUT NOW</Button>
+            <StripeCheckout
+              name="Lama Shop"
+              image="https://avatars.githubusercontent.com/u/1486366?v=4"
+              billingAddress
+              shippingAddress
+              description={`Your total is $${cart.total}`}
+              amount={cart.total * 100}
+              token={onToken}
+              stripeKey={KEY}
+            >
+              <Button>CHECKOUT NOW</Button>
+            </StripeCheckout>
           </Summary>
-        </BottomSection>
+        </Bottom>
       </Wrapper>
       <Footer />
     </Container>
