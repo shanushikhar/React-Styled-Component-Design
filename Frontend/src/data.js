@@ -1,28 +1,24 @@
-import Modal1 from "./Images/Modal1.jpg";
-import Modal2 from "./Images/modal2.jpg";
-import Modal3 from "./Images/modal3.jpg";
-
-export const Data = [
+export const sliderItems = [
   {
     id: 1,
-    title: "SPRING SALE",
-    desc: "DON'T COMPARE TO STYLE! GET FLAT 50% FOR ALL COLLECTION.",
+    img: "https://thumbs.dreamstime.com/b/beautiful-woman-sexy-fashion-model-standing-white-background-wearing-red-suit-flounces-has-long-legs-hair-amazing-103781134.jpg",
+    title: "SUMMER SALE",
+    desc: "DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF FOR NEW ARRIVALS.",
     bg: "f5fafd",
-    img: Modal1,
   },
   {
     id: 2,
-    title: "WINTER SALE",
-    desc: "DON'T COMPARE TO STYLE! GET FLAT 30% FOR ALL COLLECTION.",
+    img: "https://i.ibb.co/DG69bQ4/2.png",
+    title: "AUTUMN COLLECTION",
+    desc: "DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF FOR NEW ARRIVALS.",
     bg: "fcf1ed",
-    img: Modal2,
   },
   {
     id: 3,
-    title: "SUMMER SALE",
-    desc: "DON'T COMPARE TO STYLE! GET FLAT 70% FOR ALL COLLECTION.",
-    bg: "d8e8e7",
-    img: Modal3,
+    img: "https://i.ibb.co/cXFnLLV/3.png",
+    title: "LOUNGEWEAR LOVE",
+    desc: "DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF FOR NEW ARRIVALS.",
+    bg: "fbf0f4",
   },
 ];
 
@@ -54,7 +50,7 @@ export const popularProducts = [
   },
   {
     id: 2,
-    img: "https://cdn.pixabay.com/photo/2016/12/06/09/30/blank-1886001__340.png",
+    img: "https://cdn.shopify.com/s/files/1/0101/4832/products/Angela_Natural_Tee.png?v=1606780388",
   },
   {
     id: 3,
@@ -62,7 +58,7 @@ export const popularProducts = [
   },
   {
     id: 4,
-    img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/511I-E3vN2L._UX522_.jpg",
+    img: "https://www.burdastyle.com/pub/media/catalog/product/cache/7bd3727382ce0a860b68816435d76e26/107/BUS-PAT-BURTE-1320516/1170x1470_BS_2016_05_132_front.png",
   },
   {
     id: 5,
@@ -74,7 +70,7 @@ export const popularProducts = [
   },
   {
     id: 7,
-    img: "https://www.triumph-sports.com/wp-content/uploads/2020/09/WarRunJerChMeStyA09-1.jpg",
+    img: "https://www.vintageindustries.nl/download_front/qympzk1762/2217_Arrow_Jacket_Forest.png",
   },
   {
     id: 8,

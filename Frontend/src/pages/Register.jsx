@@ -1,61 +1,57 @@
 import styled from "styled-components";
-import Mobile from "../responsive/responsive";
+import { mobile } from "../responsive";
 
 const Container = styled.div`
+  width: 100vw;
   height: 100vh;
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.6)),
-    url("https://msingermany.co.in/wp-content/uploads/2019/12/%E2%80%94Pngtree%E2%80%94flat-wind-men-s-business_4575829-400x400.png")
+  background: linear-gradient(
+      rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 0.5)
+    ),
+    url("https://images.pexels.com/photos/6984661/pexels-photo-6984661.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940")
       center;
-  background-repeat: no-repeat;
-
+  background-size: cover;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
+
 const Wrapper = styled.div`
-  /* padding: 80px; */
-  width: 50%;
-  ${Mobile({ width: "75%" })}
+  width: 40%;
+  padding: 20px;
+  background-color: white;
+  ${mobile({ width: "75%" })}
 `;
 
 const Title = styled.h1`
-  font-size: 28px;
-  font-weight: 600;
-  ${Mobile({ fontSize: "25px" })}
+  font-size: 24px;
+  font-weight: 300;
 `;
+
 const Form = styled.form`
   display: flex;
   flex-wrap: wrap;
 `;
+
 const Input = styled.input`
   flex: 1;
   min-width: 40%;
-  margin: 5px 0;
-  margin-right: 7px;
-  padding: 9px;
-  outline: none;
-
-  &:focus {
-    border: 2px solid teal;
-  }
+  margin: 20px 10px 0px 0px;
+  padding: 10px;
 `;
 
 const Agreement = styled.span`
-  margin: 10px 0px;
-  font-weight: 600;
   font-size: 12px;
+  margin: 20px 0px;
 `;
+
 const Button = styled.button`
-  padding: 10px 20px;
-  cursor: pointer;
-  font-weight: bold;
+  width: 40%;
   border: none;
-  background: teal;
-  &:hover {
-    color: #fff;
-    background-color: #548585;
-  }
-  ${Mobile({ alignSelf: "center", width: "70%" })}
+  padding: 15px 20px;
+  background-color: teal;
+  color: white;
+  cursor: pointer;
 `;
 
 const Register = () => {
@@ -64,17 +60,17 @@ const Register = () => {
       <Wrapper>
         <Title>CREATE AN ACCOUNT</Title>
         <Form>
-          <Input placeholder="first name" />
+          <Input placeholder="name" />
           <Input placeholder="last name" />
           <Input placeholder="username" />
           <Input placeholder="email" />
           <Input placeholder="password" />
           <Input placeholder="confirm password" />
           <Agreement>
-            By Creating an account, I consent to the processing of my personal
+            By creating an account, I consent to the processing of my personal
             data in accordance with the <b>PRIVACY POLICY</b>
           </Agreement>
-          <Button>CREATE ACCOUNT</Button>
+          <Button>CREATE</Button>
         </Form>
       </Wrapper>
     </Container>
